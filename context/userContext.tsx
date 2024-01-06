@@ -8,6 +8,7 @@ import {
 	useEffect,
 } from 'react';
 import firebaseSDK from '../firebase';
+
 const UserContext = createContext<UserContextProps | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: ReactNode }> = ({

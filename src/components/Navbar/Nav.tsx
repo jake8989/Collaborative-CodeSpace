@@ -10,7 +10,6 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { useRouter } from 'next/router';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -19,6 +18,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
 import { useUser } from '../../../context/userContext';
+
 const drawerWidth: number = 240;
 import Avatar from '@mui/material/Avatar';
 
@@ -89,7 +89,11 @@ const Nav1: FC = () => {
 			{/* <Divider /> */}
 			<List sx={{ display: 'flex', flexDirection: 'column' }}>
 				<ListItem>
-					<Button fullWidth variant={'outlined'}>
+					<Button
+						fullWidth
+						variant={'outlined'}
+						onClick={() => router.push('/code')}
+					>
 						IDE
 					</Button>
 				</ListItem>
@@ -203,7 +207,11 @@ const Nav1: FC = () => {
 						<Box sx={{ display: { xs: 'none', sm: 'block' } }}>
 							<List sx={{ display: 'flex' }}>
 								<ListItem>
-									<Button fullWidth variant={'outlined'}>
+									<Button
+										fullWidth
+										variant={'outlined'}
+										onClick={() => router.push('/code')}
+									>
 										IDE
 									</Button>
 								</ListItem>

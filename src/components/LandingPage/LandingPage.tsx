@@ -6,7 +6,14 @@ const LandingPage = () => {
 		<>
 			<Paper
 				elevation={0}
-				sx={{ marginTop: '5%', display: 'flex', flexWrap: 'wrap' }}
+				sx={{
+					marginTop: '5%',
+					display: 'flex',
+					flexWrap: 'wrap',
+					flexDirection: 'column',
+					justifyContent: 'center',
+					alignItems: 'center',
+				}}
 			>
 				<Box>
 					<Box>
@@ -18,17 +25,25 @@ const LandingPage = () => {
 				<Box
 					display={'flex'}
 					justifyContent={'center'}
-					marginLeft={'8%'}
 					flexDirection={'column'}
+					marginTop={'3.4%'}
 				>
 					<Box>
-						<Typography fontSize={'5rem'}>Code</Typography>
+						<Typography fontSize={'2rem'} textAlign={'center'}>
+							Code
+						</Typography>
 					</Box>
 					<Box>
-						<Typography fontSize={'5rem'}>Compile</Typography>
+						<Typography fontSize={'2rem'} textAlign={'center'}>
+							Compile
+						</Typography>
 					</Box>
 					<Box>
-						<Typography fontSize={'5rem'} color={'#6C63FF'}>
+						<Typography
+							fontSize={'2rem'}
+							textAlign={'center'}
+							color={'#6C63FF'}
+						>
 							Collaborate
 						</Typography>
 					</Box>

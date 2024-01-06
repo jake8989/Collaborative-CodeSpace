@@ -1,6 +1,23 @@
-Collaborative CodeSpace
-Steps
-Make .env file
-Run npm install
-Error: npm install --force
-Start the app: npm run dev
+
+# Collaborative CodeSpace
+Code, Compile and Collaborate
+
+
+
+.env file 
+NEXT_PUBLIC_BACKEND=localhost:8000
+NEXT_PUBLIC_FIREBASE_API_KEY
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+NEXT_PUBLIC_FIREBASE_PROJECT_ID
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+NEXT_PUBLIC_FIREBASE_ID
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
+
+firebase --v : 8.7.1
+
+code editor: @monaco-editor/react
+
+
+
+
