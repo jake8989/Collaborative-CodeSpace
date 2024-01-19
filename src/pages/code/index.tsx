@@ -1,5 +1,5 @@
 import CodeEditor from '../../components/CodeEditor/Editor';
-import { Paper, Box, Typography } from '@mui/material';
+import { Paper, Box, Typography, Button } from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -27,7 +27,8 @@ const code = () => {
 				</Paper>
 				<Box
 					display={'flex'}
-					justifyContent={'center'}
+					alignItems={'center'}
+					flexDirection={'column'}
 					width={'33%'}
 					marginTop={'3%'}
 				>
@@ -54,6 +55,9 @@ const code = () => {
 							</Select>
 						</FormControl>
 					</Box>
+					<Button sx={{ width: '70%', marginTop: '3%' }} variant={'outlined'}>
+						Run
+					</Button>
 				</Box>
 			</Box>
 		</>
