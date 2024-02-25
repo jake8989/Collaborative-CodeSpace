@@ -54,6 +54,7 @@ const useEmailPasswordSignup = () => {
 					)
 					.then((response: AxiosResponse) => {
 						// console.log(response);
+						setFormData({ ...formData });
 						setLoading(false);
 						cookie.set('token', response.data?.clUser?.user?.token);
 						user.user.token = response.data?.clUser?.user?.token;

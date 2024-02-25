@@ -14,17 +14,7 @@ const code = () => {
 	return (
 		<>
 			<Box display={'flex'}>
-				<Paper
-					elevation={0}
-					sx={{
-						width: '67%',
-						display: 'flex',
-						overflowY: 'hidden',
-						justifyContent: 'center',
-					}}
-				>
-					<CodeEditor></CodeEditor>
-				</Paper>
+				<CodeEditor></CodeEditor>
 				<Box
 					display={'flex'}
 					alignItems={'center'}

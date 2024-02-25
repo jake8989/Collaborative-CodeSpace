@@ -194,6 +194,7 @@ const SignInSide = () => {
 
 						<Button
 							onClick={handleSubmit}
+							type="submit"
 							variant="outlined"
 							sx={{ mt: 3, mb: 2 }}
 							fullWidth
