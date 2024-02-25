@@ -8,7 +8,7 @@ import {
 	useEffect,
 } from 'react';
 import firebaseSDK from '../firebase';
-
+import cookie from 'js-cookie';
 const UserContext = createContext<UserContextProps | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: ReactNode }> = ({
@@ -31,6 +31,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
 	const logoutUser = () => {
 		setUser(null);
 		localStorage.removeItem('user');
+		cookie.remove('token');
 		firebaseSDK.auth().signOut();
 	};
 

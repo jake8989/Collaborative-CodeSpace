@@ -5,6 +5,8 @@ import { NextRouter } from 'next/router';
 import firebaseSDK from '../firebase';
 import { useUser } from '../context/userContext';
 import { userType } from '../types/user';
+import axios, { Axios, AxiosResponse } from 'axios';
+import cookie from 'js-cookie';
 const useEmailPasswordSignup = () => {
 	const [loading, setLoading] = useState<boolean>(false);
 	const { loginUser } = useUser();
@@ -28,10 +30,6 @@ const useEmailPasswordSignup = () => {
 				return response;
 			})
 			.then((response) => {
-				setLoading(false);
-				toast.success('Account Created Succesfully', {
-					position: 'bottom-center',
-				});
 				const user: userType = {
 					user: {
 						name: response.user?.displayName,
@@ -40,10 +38,57 @@ const useEmailPasswordSignup = () => {
 						uid: response.user?.uid,
 					},
 				};
-				loginUser(user);
+
 				//backend -service------- user storing request
-				console.log(response.user);
-				router.push('/');
+				const postData = {
+					userId: user.user.uid,
+					name: user.user.name,
+					email: user.user.email,
+					password: formData.user.password,
+					strategy: 'LOCALEMAIL',
+				};
+				axios
+					.post(
+						`${process.env.NEXT_PUBLIC_BACKEND}/api/v1/users/new-user`,
+						postData
+					)
+					.then((response: AxiosResponse) => {
+						// console.log(response);
+						setLoading(false);
+						cookie.set('token', response.data?.clUser?.user?.token);
+						user.user.token = response.data?.clUser?.user?.token;
+						loginUser(user);
+						toast.success('Account Created Succesfully', {
+							position: 'bottom-center',
+						});
+						router.push('/');
+					})
+					.catch((err: any) => {
+						setLoading(false);
+						console.log('err', err);
+						////////////////////////////////////
+						// deleting firebase user
+						function deleteUserFromFirebase(userId: string | undefined) {
+							if (userId == undefined) return;
+							const fuser = firebaseSDK.auth().currentUser;
+							if (fuser && fuser.uid == userId) {
+								fuser
+									.delete()
+									.then((res: any) => {
+										console.log(
+											'If Mongo Throws an error then firebase will also delete the stored user'
+										);
+									})
+									.catch((e: any) => {
+										console.log('Something Went Wrong', e);
+									});
+							}
+						}
+						deleteUserFromFirebase(user?.user?.uid);
+						toast.error(`${err.response?.data?.message}`, {
+							position: 'bottom-center',
+						});
+					});
 			})
 			.catch((err) => {
 				setLoading(false);

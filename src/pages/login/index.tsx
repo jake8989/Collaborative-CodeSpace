@@ -167,19 +167,20 @@ export default function SignInSide() {
 							<Button
 								variant="outlined"
 								color="primary"
+								fullWidth
 								startIcon={<SiGoogle />}
 								onClick={handleGoogleAuthServices}
 							>
 								SignIn with Google
 							</Button>
-							<Button
+							{/* <Button
 								variant="outlined"
 								color="primary"
 								startIcon={<SiGithub />}
 								onClick={handleGitHubAuthServices}
 							>
 								SignIn with GitHub
-							</Button>
+							</Button> */}
 						</Box>
 
 						<Grid container>

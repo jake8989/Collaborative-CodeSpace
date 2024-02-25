@@ -205,19 +205,20 @@ const SignInSide = () => {
 							<Button
 								variant="outlined"
 								color="primary"
+								fullWidth
 								startIcon={<SiGoogle />}
 								onClick={handleGoogleAuthServices}
 							>
 								SignUp with Google
 							</Button>
-							<Button
+							{/* <Button
 								variant="outlined"
 								color="primary"
 								startIcon={<SiGithub />}
 								onClick={handleGitHubAuthServices}
 							>
 								SignUp with GitHub
-							</Button>
+							</Button> */}
 						</Box>
 						<Grid item xs={false} sm={4} md={7}></Grid>
 						<Grid item>

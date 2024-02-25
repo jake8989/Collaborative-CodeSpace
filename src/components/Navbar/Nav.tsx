@@ -52,7 +52,7 @@ const Transition = React.forwardRef(function Transition(
 	return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const Nav1: FC = () => {
+const Nav1 = () => {
 	const router = useRouter();
 
 	const [mobileOpen, setMobileOpen] = React.useState(false);

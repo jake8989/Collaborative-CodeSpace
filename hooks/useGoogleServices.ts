@@ -3,6 +3,8 @@ import { NextRouter } from 'next/router';
 import firebaseSDK from '../firebase';
 import { useUser } from '../context/userContext';
 import { userType } from '../types/user';
+import axios, { AxiosResponse } from 'axios';
+import cookie from 'js-cookie';
 const useGoogleServices = () => {
 	const [loadingWithGoogle, setLoading] = useState<boolean>(false);
 	const { loginUser } = useUser();
@@ -21,24 +23,42 @@ const useGoogleServices = () => {
 						uid: response.user?.uid,
 					},
 				};
-				if (response.additionalUserInfo?.isNewUser) {
-					///do backend stuff for new user
-					///requests for backend
 
-					setLoading(false);
-					loginUser(user);
-					toast.success('Logged In Successfully', {
-						position: 'bottom-center',
+				///do backend stuff for new user
+				///requests for backend
+				const postData = {
+					userId: user.user.uid,
+					name: user.user.name,
+					email: user.user.email,
+					strategy: 'GOOGLE',
+					isNewAccount: response.additionalUserInfo?.isNewUser,
+				};
+				axios
+					.post(
+						`${process.env.NEXT_PUBLIC_BACKEND}/api/v1/users/googleRequestHandler`,
+						postData
+					)
+					.then((response: AxiosResponse) => {
+						setLoading(false);
+						cookie.set('token', response.data?.clUser?.user?.token);
+						user.user.token = response.data?.clUser?.user?.token;
+						loginUser(user);
+						toast.success(
+							postData.isNewAccount
+								? 'Account Created Succesfully'
+								: 'Logged In Successfully',
+							{
+								position: 'bottom-center',
+							}
+						);
+						router.push('/');
+					})
+					.catch((err) => {
+						setLoading(false);
+						toast.error(`${err.response?.data?.message}`, {
+							position: 'bottom-center',
+						});
 					});
-					router.push('/');
-				} else {
-					loginUser(user);
-					setLoading(false);
-					toast.success('Logged In Successfully', {
-						position: 'bottom-center',
-					});
-					router.push('/');
-				}
 			})
 			.catch((err: any) => {
 				setLoading(false);
