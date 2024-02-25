@@ -9,13 +9,14 @@ import {
 } from 'react';
 import firebaseSDK from '../firebase';
 import cookie from 'js-cookie';
+import useGetAllProjects from '../hooks/useGetAllProjects';
 const UserContext = createContext<UserContextProps | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: ReactNode }> = ({
 	children,
 }) => {
 	const [user, setUser] = useState<userType | null>(null);
-
+	const { getAllProjects } = useGetAllProjects();
 	useEffect(() => {
 		const storedUser = localStorage.getItem('user');
 		if (storedUser) {
@@ -35,6 +36,8 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
 		setUser(null);
 		localStorage.removeItem('user');
 		cookie.remove('token');
+		cookie.remove('user_id');
+		getAllProjects();
 		firebaseSDK.auth().signOut();
 	};
 

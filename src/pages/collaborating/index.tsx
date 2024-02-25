@@ -18,6 +18,12 @@ import { nanoid } from 'nanoid';
 import cookie from 'js-cookie';
 import { useEffect } from 'react';
 import CodeIcon from '@mui/icons-material/Code';
+import useCreateNewProject from '../../../hooks/useCreateNewProject';
+import { toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
+import LoadingScreen from '../../components/LoadingScreen/LoadingScreen';
+import useGetAllProjects from '../../../hooks/useGetAllProjects';
+import { useUser } from '../../../context/userContext';
 const dummyProjects = [
 	{
 		id: '1',
@@ -32,18 +38,21 @@ const dummyProjects = [
 		name: 'Project3',
 	},
 ];
-
 const Collaborating = () => {
 	const [open, setOpen] = React.useState(false);
-	const [projectDataList, setProjectDataList] = useState<ProjectInput[]>([]);
+
+	const { createNewProject, loading } = useCreateNewProject();
+	const { getAllProjects, loadingProjects, projectDataList } =
+		useGetAllProjects();
 	const handleClickOpen = () => {
 		setOpen(true);
 	};
 	const handleClose = () => {
 		setOpen(false);
 	};
-
-	const handleProject = (project_name: string) => {
+	let project_id__;
+	const { user } = useUser();
+	const handleProject = async (project_name: string) => {
 		if (project_name.trim().length == 0) return;
 		console.log('Hiited');
 		let sk = '';
@@ -52,6 +61,7 @@ const Collaborating = () => {
 			sk += project_name[i];
 		}
 		const project_id: string = sk + nanoid(7);
+		project_id__ = project_id;
 		const owner_id = cookie.get('user_id');
 		const time: string = 'later i will change it';
 		const newProjectData: ProjectInput = {
@@ -60,101 +70,119 @@ const Collaborating = () => {
 			project_name,
 			time,
 		};
-		setProjectDataList((prevProjectDataList) => [
-			...prevProjectDataList,
-			newProjectData,
-		]);
+
+		try {
+			await createNewProject(newProjectData, toast);
+			await getAllProjects();
+		} catch (error) {
+			console.log(error);
+		}
+		// setProjectDataList((prevProjectDataList) => [
+		// 	...prevProjectDataList,
+		// 	newProjectData,
+		// ]);
 	};
 	useEffect(() => {
-		// This effect will run whenever projectDataList changes
-		console.log('Project Data List Updated:', projectDataList);
-	}, [projectDataList]);
+		getAllProjects();
+	}, [project_id__, user]);
+	if (loadingProjects) return <LoadingScreen></LoadingScreen>;
 	return (
 		<>
-			<Nav1></Nav1>
-			<Paper
-				elevation={0}
-				sx={{
-					marginTop: '3rem',
-				}}
-			>
-				<Box sx={{ flexGrow: 1 }}>
-					<Grid
-						container
-						// spacing={{ xs: 2, md: 3 }}
-						columns={{ xs: 4, sm: 8, md: 12 }}
-						padding={'2rem'}
-						justifyContent={'center'}
-						alignItems={'center'}
+			{loading ? (
+				<>
+					{' '}
+					<ToastContainer></ToastContainer>
+					<LoadingScreen></LoadingScreen>
+				</>
+			) : (
+				<>
+					<Nav1></Nav1>
+					<ToastContainer></ToastContainer>
+					<Paper
+						elevation={0}
+						sx={{
+							marginTop: '3rem',
+						}}
 					>
-						<Grid padding={'2rem'} item xs={12} sm={4} md={4}>
-							<Button
-								style={{ width: '100%', height: '100%', padding: '0px' }}
-								fullWidth
-								onClick={handleClickOpen}
+						<Box sx={{ flexGrow: 1 }}>
+							<Grid
+								container
+								// spacing={{ xs: 2, md: 3 }}
+								columns={{ xs: 4, sm: 8, md: 12 }}
+								padding={'2rem'}
+								justifyContent={'center'}
+								alignItems={'center'}
 							>
-								<Card
-									sx={{
-										minWidth: '100%',
-										minHeight: '150px',
-										display: 'flex',
-										justifyContent: 'center',
-										alignItems: 'center',
-									}}
-								>
-									<CardContent>
-										<Typography color={'#6C63FF'} textAlign={'center'}>
-											<AddIcon></AddIcon>
-										</Typography>
-										<Typography textAlign={'center'} color={'#6C63FF'}>
-											Add Project
-										</Typography>
-									</CardContent>
-								</Card>
-							</Button>
-						</Grid>
-
-						{projectDataList.map((p, index) => (
-							<Grid padding={'2rem'} item xs={12} sm={4} md={4} key={index}>
-								<Button
-									style={{ width: '100%', height: '100%', padding: '0px' }}
-									fullWidth
-								>
-									<Card
-										sx={{
-											minWidth: '100%',
-											minHeight: '150px',
-										}}
+								<Grid padding={'2rem'} item xs={12} sm={4} md={4}>
+									<Button
+										style={{ width: '100%', height: '100%', padding: '0px' }}
+										fullWidth
+										onClick={handleClickOpen}
 									>
-										<CardContent>
-											<Typography textAlign={'left'}>
-												{p.project_name}
-											</Typography>
-											<Typography
-												fontSize={'10px'}
-												marginTop={'4rem'}
-												textAlign="left"
+										<Card
+											sx={{
+												minWidth: '100%',
+												minHeight: '150px',
+												display: 'flex',
+												justifyContent: 'center',
+												alignItems: 'center',
+											}}
+										>
+											<CardContent>
+												<Typography color={'#6C63FF'} textAlign={'center'}>
+													<AddIcon></AddIcon>
+												</Typography>
+												<Typography textAlign={'center'} color={'#6C63FF'}>
+													Add Project
+												</Typography>
+											</CardContent>
+										</Card>
+									</Button>
+								</Grid>
+
+								{projectDataList.map((p, index) => (
+									<Grid padding={'2rem'} item xs={12} sm={4} md={4} key={index}>
+										<Button
+											style={{ width: '100%', height: '100%', padding: '0px' }}
+											fullWidth
+										>
+											<Card
+												sx={{
+													minWidth: '100%',
+													minHeight: '150px',
+												}}
 											>
-												{p.project_id}
-												<CodeIcon
-													fontSize="small"
-													sx={{ marginLeft: '10px' }}
-												></CodeIcon>
-											</Typography>
-										</CardContent>
-									</Card>
-								</Button>
+												<CardContent>
+													<Typography textAlign={'left'}>
+														{p.project_name}
+													</Typography>
+													<Typography
+														fontSize={'10px'}
+														marginTop={'4rem'}
+														textAlign="left"
+													>
+														{p.project_id}
+														<CodeIcon
+															fontSize="small"
+															sx={{ marginLeft: '10px' }}
+														></CodeIcon>
+													</Typography>
+												</CardContent>
+											</Card>
+										</Button>
+									</Grid>
+								))}
 							</Grid>
-						))}
-					</Grid>
-				</Box>
-				<Modal
-					open={open}
-					handleClose={handleClose}
-					title={'Open'}
-					handleProject={handleProject}
-				></Modal>
-			</Paper>
+						</Box>
+						<Modal
+							open={open}
+							handleClose={handleClose}
+							title={'Open'}
+							handleProject={handleProject}
+						></Modal>
+					</Paper>
+				</>
+			)}
 		</>
 	);
 };
