@@ -101,7 +101,7 @@ const Nav1 = () => {
 					<React.Fragment>
 						<Box display={'flex'} justifyContent={'center'}>
 							<Avatar
-								{...stringAvatar(`${user.user.name?.trim()} _`)}
+								{...stringAvatar(`${user.user.name?.trim()} #`)}
 								sx={{ cursor: 'pointer' }}
 								component={'button'}
 								onClick={handleClickOpen}
@@ -218,7 +218,7 @@ const Nav1 = () => {
 								{user?.user ? (
 									<React.Fragment>
 										<Avatar
-											{...stringAvatar(`${user.user.name?.trim()} _`)}
+											{...stringAvatar(`${user.user.name?.trim()} #`)}
 											sx={{ cursor: 'pointer' }}
 											component={'button'}
 											onClick={handleClickOpen}

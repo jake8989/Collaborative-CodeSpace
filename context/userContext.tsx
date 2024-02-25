@@ -26,6 +26,9 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
 	const loginUser = (newUser: userType) => {
 		setUser(newUser);
 		localStorage.setItem('user', JSON.stringify(newUser));
+		const owner_id: string | undefined = newUser?.user?.uid;
+		if (!owner_id) return;
+		cookie.set('user_id', owner_id);
 	};
 
 	const logoutUser = () => {

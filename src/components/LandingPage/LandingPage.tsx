@@ -1,7 +1,9 @@
 import React from 'react';
 import { Paper, Box, Button, Typography, Card } from '@mui/material';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 const LandingPage = () => {
+	const router = useRouter();
 	return (
 		<>
 			<Paper
@@ -56,7 +58,12 @@ const LandingPage = () => {
 				marginTop={'3rem'}
 				marginBottom={'4rem'}
 			>
-				<Button variant="outlined">Start Collaborating</Button>
+				<Button
+					variant="outlined"
+					onClick={() => router.push('/collaborating')}
+				>
+					Start Collaborating
+				</Button>
 			</Box>
 		</>
 	);
