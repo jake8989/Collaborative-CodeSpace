@@ -86,9 +86,16 @@ const useEmailPasswordSignup = () => {
 							}
 						}
 						deleteUserFromFirebase(user?.user?.uid);
-						toast.error(`${err.response?.data?.message}`, {
-							position: 'bottom-center',
-						});
+						toast.error(
+							`${
+								err.response?.data?.message
+									? err.response?.data?.message
+									: 'Server Error'
+							}`,
+							{
+								position: 'bottom-center',
+							}
+						);
 					});
 			})
 			.catch((err) => {

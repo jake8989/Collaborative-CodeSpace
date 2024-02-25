@@ -59,17 +59,25 @@ const useEmailPasswordLogin = () => {
 					.catch((err) => {
 						setLoading(false);
 						console.log('err', err);
-						toast.error(`${err.response?.data?.message}`, {
-							position: 'bottom-center',
-						});
+						toast.error(
+							`${
+								err.response?.data?.message != undefined
+									? err.response?.data?.message
+									: 'Server Error'
+							}`,
+							{
+								position: 'bottom-center',
+							}
+						);
 						return;
 					});
 			})
 			.catch((err) => {
 				setLoading(false);
-				toast.error(`${'Invaild Credentials'}`, {
+				toast.error(`${err.message}`, {
 					position: 'bottom-center',
 				});
+
 				console.log(err);
 				return;
 			});
