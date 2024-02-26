@@ -10,7 +10,7 @@ import {
 	CardContent,
 	Typography,
 } from '@mui/material';
-
+import moment from 'moment';
 import AddIcon from '@mui/icons-material/Add';
 import Modal from '../../components/CustomModal/Modal';
 import { ProjectInput } from '../../../types/project';
@@ -63,7 +63,7 @@ const Collaborating = () => {
 		const project_id: string = sk + nanoid(7);
 		project_id__ = project_id;
 		const owner_id = cookie.get('user_id');
-		const time: string = 'later i will change it';
+		const time: string = moment().format('MMMM Do YYYY, h:mm:ss a');
 		const newProjectData: ProjectInput = {
 			project_id,
 			owner_id,
