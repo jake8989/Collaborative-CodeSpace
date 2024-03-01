@@ -6,14 +6,20 @@ import { userType } from '../types/user';
 import axios, { AxiosResponse } from 'axios';
 import { ProjectInput } from '../types/project';
 import cookie from 'js-cookie';
+import { useRouter } from 'next/router';
+
 const useCreateNewProject = () => {
 	const [loading, setLoading] = useState<boolean>(false);
-	const { user } = useUser();
+	const { user, logoutUser } = useUser();
+	const router = useRouter();
 	const createNewProject = async (projectData: ProjectInput, toast: any) => {
 		if (!user || !cookie.get('user_id')) {
-			toast.error('You must signup/login to do this action', {
+			toast.error('Session not created please login/signup to continue', {
 				position: 'bottom-center',
 			});
+			logoutUser();
+			cookie.set('previous_step', '/collaborating');
+			router.push('/login');
 			return;
 		}
 		setLoading(true);
@@ -37,10 +43,14 @@ const useCreateNewProject = () => {
 			.catch((err) => {
 				setLoading(false);
 				console.log(err);
+				router.push('/login');
+				cookie.set('previous_step', '/collaborating');
+				logoutUser();
+
 				toast.error(
 					`${
-						err.response.data.message
-							? err.response.data.message
+						err.response?.data?.message
+							? err?.response?.data?.message
 							: 'Server Error'
 					}`,
 					{

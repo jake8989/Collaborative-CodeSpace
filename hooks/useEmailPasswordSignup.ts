@@ -62,7 +62,9 @@ const useEmailPasswordSignup = () => {
 						toast.success('Account Created Succesfully', {
 							position: 'bottom-center',
 						});
-						router.push('/');
+						let url = cookie.get('previous_step');
+						if (url) router.push(url);
+						else router.push('/');
 					})
 					.catch((err: any) => {
 						setLoading(false);

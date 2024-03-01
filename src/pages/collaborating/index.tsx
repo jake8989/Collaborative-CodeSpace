@@ -52,7 +52,10 @@ const Collaborating = () => {
 	};
 	let project_id__;
 	const { user } = useUser();
-	const handleProject = async (project_name: string) => {
+	const handleProject = async (
+		project_name: string,
+		project_description: string
+	) => {
 		if (project_name.trim().length == 0) return;
 		console.log('Hiited');
 		let sk = '';
@@ -60,7 +63,7 @@ const Collaborating = () => {
 			if (project_name[i] == ' ') continue;
 			sk += project_name[i];
 		}
-		const project_id: string = sk + nanoid(7);
+		const project_id: string = sk + nanoid(10);
 		project_id__ = project_id;
 		const owner_id = cookie.get('user_id');
 		const time: string = moment().format('MMMM Do YYYY, h:mm:ss a');
@@ -68,15 +71,18 @@ const Collaborating = () => {
 			project_id,
 			owner_id,
 			project_name,
+			project_description,
 			time,
 		};
 
 		try {
+			console.log(project_id__);
 			await createNewProject(newProjectData, toast);
 			await getAllProjects();
 		} catch (error) {
 			console.log(error);
 		}
+		await getAllProjects();
 		// setProjectDataList((prevProjectDataList) => [
 		// 	...prevProjectDataList,
 		// 	newProjectData,
@@ -85,6 +91,7 @@ const Collaborating = () => {
 	useEffect(() => {
 		getAllProjects();
 	}, [project_id__, user]);
+
 	if (loadingProjects) return <LoadingScreen></LoadingScreen>;
 	return (
 		<>
@@ -152,14 +159,18 @@ const Collaborating = () => {
 													minHeight: '150px',
 												}}
 											>
-												<CardContent>
+												<CardContent sx={{ position: 'relative' }}>
 													<Typography textAlign={'left'}>
 														{p.project_name}
 													</Typography>
+													<Typography textAlign={'left'} fontSize={'11px'}>
+														{p.project_description}
+													</Typography>
 													<Typography
 														fontSize={'10px'}
-														marginTop={'4rem'}
 														textAlign="left"
+														position={'absolute'}
+														bottom={'-60px'}
 													>
 														{p.project_id}
 														<CodeIcon

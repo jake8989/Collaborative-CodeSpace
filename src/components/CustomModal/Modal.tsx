@@ -24,7 +24,7 @@ interface CustomModalProps {
 	open: boolean;
 	handleClose: () => void;
 	title: string;
-	handleProject: (project_name: string) => void;
+	handleProject: (project_name: string, project_description: string) => void;
 }
 const customModal: React.FC<CustomModalProps> = ({
 	open,
@@ -33,8 +33,8 @@ const customModal: React.FC<CustomModalProps> = ({
 	handleProject,
 }) => {
 	const [projectName, setProjectName] = useState<string>('');
-
-	const handleSave = () => {
+	const [projectDescription, setProjectDescription] = useState<String>('');
+	const handleSave = async () => {
 		if (projectName.trim().length == 0) return;
 		if (projectName.trim().length > 15) {
 			toast.error('Project Name Length Should be at most 15 character long', {
@@ -42,10 +42,17 @@ const customModal: React.FC<CustomModalProps> = ({
 			});
 			return;
 		}
-		console.log(projectName);
-		handleProject(projectName.trim());
+		console.log(projectDescription);
+		if (projectDescription.trim().length > 50) {
+			toast.error('Project Description should contain at most 50 character', {
+				position: 'bottom-center',
+			});
+			return;
+		}
+		await handleProject(projectName.trim(), projectDescription.trim());
 		handleClose();
 		setProjectName('');
+		setProjectDescription('');
 	};
 	return (
 		<>
@@ -72,6 +79,19 @@ const customModal: React.FC<CustomModalProps> = ({
 								setProjectName(e.target.value);
 							}}
 							label="Enter the name of your project"
+							variant="standard"
+						/>
+						<TextField
+							fullWidth
+							type="text"
+							name="project_description"
+							id="project_description"
+							value={projectDescription}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+								e.preventDefault();
+								setProjectDescription(e.target.value);
+							}}
+							label="description"
 							variant="standard"
 						/>
 					</DialogContentText>

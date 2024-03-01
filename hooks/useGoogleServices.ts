@@ -51,7 +51,9 @@ const useGoogleServices = () => {
 								position: 'bottom-center',
 							}
 						);
-						router.push('/');
+						let url = cookie.get('previous_step');
+						if (url) router.push(url);
+						else router.push('/');
 					})
 					.catch((err) => {
 						setLoading(false);

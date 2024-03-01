@@ -9,7 +9,7 @@ import { ProjectInput } from '../types/project';
 const useGetAllProjects = () => {
 	const [loadingProjects, setLoading] = useState<boolean>(false);
 	const [projectDataList, setProjectDataList] = useState<ProjectInput[]>([]);
-	const getAllProjects = () => {
+	const getAllProjects = async () => {
 		setLoading(true);
 		axios
 			.get(

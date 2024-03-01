@@ -54,11 +54,14 @@ const useEmailPasswordLogin = () => {
 						toast.success('Logged In Succesfully', {
 							position: 'bottom-center',
 						});
-						router.push('/');
+						let url = cookie.get('previous_step');
+						if (url) router.push(url);
+						else router.push('/');
 					})
 					.catch((err) => {
 						setLoading(false);
 						console.log('err', err);
+
 						toast.error(
 							`${
 								err.response?.data?.message != undefined
