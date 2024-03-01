@@ -5,7 +5,7 @@ const CodeEditor = () => {
 		<Paper
 			elevation={0}
 			sx={{
-				width: '67%',
+				width: '80%',
 				display: 'flex',
 				overflowY: 'hidden',
 				justifyContent: 'center',

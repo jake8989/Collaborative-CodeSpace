@@ -6,10 +6,14 @@ import { userType } from '../types/user';
 import axios, { AxiosResponse } from 'axios';
 import cookie from 'js-cookie';
 import { ProjectInput } from '../types/project';
+// import { useUser } from '../context/userContext';
+import { useRouter } from 'next/router';
 const useGetAllProjects = () => {
 	const [loadingProjects, setLoading] = useState<boolean>(false);
 	const [projectDataList, setProjectDataList] = useState<ProjectInput[]>([]);
-	const getAllProjects = async () => {
+	// const { logoutUser } = useUser();
+	const router = useRouter();
+	const getAllProjects = async (toast: any) => {
 		setLoading(true);
 		axios
 			.get(
@@ -34,6 +38,11 @@ const useGetAllProjects = () => {
 			.catch((err) => {
 				setLoading(false);
 				console.log(err);
+				toast.error(`${err.response?.data?.message}`, {
+					position: 'bottom-center',
+				});
+				// logoutUser();
+				router.push('/login');
 				return;
 			});
 	};

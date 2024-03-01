@@ -82,18 +82,18 @@ const Collaborating = () => {
 		try {
 			console.log(project_id__);
 			await createNewProject(newProjectData, toast);
-			await getAllProjects();
+			await getAllProjects(toast);
 		} catch (error) {
 			console.log(error);
 		}
-		await getAllProjects();
+		await getAllProjects(toast);
 		// setProjectDataList((prevProjectDataList) => [
 		// 	...prevProjectDataList,
 		// 	newProjectData,
 		// ]);
 	};
 	useEffect(() => {
-		getAllProjects();
+		getAllProjects(toast);
 	}, [project_id__, user]);
 
 	if (loadingProjects) return <LoadingScreen></LoadingScreen>;

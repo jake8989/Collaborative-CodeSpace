@@ -56,7 +56,9 @@ const useEmailPasswordSignup = () => {
 						// console.log(response);
 						setFormData({ ...formData });
 						setLoading(false);
-						cookie.set('token', response.data?.clUser?.user?.token);
+						cookie.set('token', response.data?.clUser?.user?.token, {
+							expires: 7,
+						});
 						user.user.token = response.data?.clUser?.user?.token;
 						loginUser(user);
 						toast.success('Account Created Succesfully', {

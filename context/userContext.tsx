@@ -10,6 +10,7 @@ import {
 import firebaseSDK from '../firebase';
 import cookie from 'js-cookie';
 import useGetAllProjects from '../hooks/useGetAllProjects';
+// import { toast } from 'react-toastify';
 const UserContext = createContext<UserContextProps | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: ReactNode }> = ({
@@ -29,7 +30,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
 		localStorage.setItem('user', JSON.stringify(newUser));
 		const owner_id: string | undefined = newUser?.user?.uid;
 		if (!owner_id) return;
-		cookie.set('user_id', owner_id);
+		cookie.set('user_id', owner_id, { expires: 7 });
 	};
 
 	const logoutUser = () => {
@@ -37,7 +38,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
 		localStorage.removeItem('user');
 		cookie.remove('token');
 		cookie.remove('user_id');
-		getAllProjects();
+		// getAllProjects(toast);
 		firebaseSDK.auth().signOut();
 	};
 
