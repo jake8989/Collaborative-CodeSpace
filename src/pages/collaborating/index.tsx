@@ -10,7 +10,7 @@ import {
 	CardContent,
 	Typography,
 } from '@mui/material';
-import moment from 'moment';
+import moment, { relativeTimeRounding } from 'moment';
 import AddIcon from '@mui/icons-material/Add';
 import Modal from '../../components/CustomModal/Modal';
 import { ProjectInput } from '../../../types/project';
@@ -24,6 +24,8 @@ import { ToastContainer } from 'react-toastify';
 import LoadingScreen from '../../components/LoadingScreen/LoadingScreen';
 import useGetAllProjects from '../../../hooks/useGetAllProjects';
 import { useUser } from '../../../context/userContext';
+import SettingsIcon from '@mui/icons-material/Settings';
+// import { useRouter } from 'next/router';
 const dummyProjects = [
 	{
 		id: '1',
@@ -44,6 +46,8 @@ const Collaborating = () => {
 	const { createNewProject, loading } = useCreateNewProject();
 	const { getAllProjects, loadingProjects, projectDataList } =
 		useGetAllProjects();
+	const { logoutUser } = useUser();
+	const router = useRouter();
 	const handleClickOpen = () => {
 		setOpen(true);
 	};
@@ -152,6 +156,27 @@ const Collaborating = () => {
 										<Button
 											style={{ width: '100%', height: '100%', padding: '0px' }}
 											fullWidth
+											onClick={() => {
+												let user = cookie.get('user_id');
+												let token = cookie.get('token');
+												if (!user || !token) {
+													logoutUser();
+													router.push('/login');
+													toast.error(
+														`Error: Please login/signup to continue`,
+														{
+															position: 'bottom-center',
+														}
+													);
+													// return;
+												} else {
+													router.push(
+														`/collaborating/${cookie.get('user_id')}/${
+															p.project_id
+														}`
+													);
+												}
+											}}
 										>
 											<Card
 												sx={{
@@ -162,6 +187,9 @@ const Collaborating = () => {
 												<CardContent sx={{ position: 'relative' }}>
 													<Typography textAlign={'left'}>
 														{p.project_name}
+														{/* <Button>
+															<SettingsIcon></SettingsIcon>
+														</Button> */}
 													</Typography>
 													<Typography textAlign={'left'} fontSize={'11px'}>
 														{p.project_description}

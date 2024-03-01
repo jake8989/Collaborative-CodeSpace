@@ -53,7 +53,7 @@ const useGoogleServices = () => {
 						);
 						let url = cookie.get('previous_step');
 						if (url) router.push(url);
-						else router.push('/');
+						router.push('/');
 					})
 					.catch((err) => {
 						setLoading(false);
