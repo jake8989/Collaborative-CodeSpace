@@ -1,21 +1,34 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import useVerifyAndProjects from '../../../../hooks/useVerifyUserAndProject';
 import LoadingScreen from '../../../components/LoadingScreen/LoadingScreen';
 import { toast } from 'react-toastify';
 import { ToastContainer } from 'react-toastify';
-import { Typography, Button, Box, ButtonGroup } from '@mui/material';
+import { Typography, Button, Box } from '@mui/material';
 import { useUser } from '../../../../context/userContext';
 import CodeEditor from '../../../components/CodeEditor/Editor';
 import Snackbar from '@mui/material/Snackbar';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-import { title } from 'process';
-import { Position } from 'monaco-editor';
+import { useFile } from '../../../../context/fileContext';
+import { fileType } from '../../../../types/file';
+import AddMembers from '../../../components/AddMembers/AddMembers';
+const style = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '10px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
 const CollabUrl = () => {
   const router = useRouter();
   const { user_id, project_id } = router.query;
   const { logoutUser } = useUser();
+  const { setFileDefault } = useFile();
+  const { file, defaultFileSetting } = useFile();
+  const [fileName, setFileName] = useState<string>('');
   const {
     verifyUser,
     verifyProjectId,
@@ -37,24 +50,41 @@ const CollabUrl = () => {
     verify();
   }, [router.query]);
   const [open, setOpen] = React.useState(false);
-
+  const [codeFile, setCodeFile] = useState<any>();
+  const [fileContent, setFileContent] = useState<string>('');
   const handleClick = () => {
     setOpen(true);
   };
 
-  const handleClose = (
-    event: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    // const ProjectUrl = user_id + '/' + project_id;
-    if (reason === 'clickaway') {
-      return;
-    }
-    // navigator.clipboard.writeText(ProjectUrl);
-    // alert('Project Url Copied to Clipboard!');
+  const handleClose = () => {
     setOpen(false);
   };
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
+    const uploadedCodeFile = event.target?.files?.[0] as File;
+    if (!uploadedCodeFile) return;
+    const fileName = uploadedCodeFile.name;
+    setFileName(fileName);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const content = e.target?.result as string; // Read only the first 100 characters
+      // console.log('File preview:', content);
+      // setFileContent(content);
+      const FileToBeSetted: fileType = {
+        file: {
+          content: content,
+          extention: fileName.split('.')[1],
+        },
+      };
+      setFileDefault(FileToBeSetted);
+
+      // HideImageOutlined();
+      // Display the preview in your UI
+    };
+    reader.readAsText(uploadedCodeFile);
+    console.log(fileContent);
+  };
   const action = (
     <>
       <ToastContainer></ToastContainer>
@@ -84,9 +114,10 @@ const CollabUrl = () => {
         )}
         {!verifiedUser && verifiedProject && (
           <Typography>
-            User Not Verified
+            User Not Verified Login agina to continue
             <Button
               onClick={() => {
+                defaultFileSetting();
                 logoutUser();
                 router.push('/login');
               }}
@@ -97,11 +128,12 @@ const CollabUrl = () => {
         )}
         {!verifiedProject && verifiedUser && (
           <Typography>
-            Project Id is not verified please check project id
+            You are not Collaborator/Viewer to this Project
             <Button
               onClick={() => {
-                logoutUser();
-                router.push('/login');
+                // logoutUser();
+                defaultFileSetting();
+                router.push('/collaborating');
               }}
             >
               Click Here to continue
@@ -117,20 +149,42 @@ const CollabUrl = () => {
               <CodeEditor></CodeEditor>
 
               <Box marginTop={'50px'} marginLeft={'20px'}>
+                <Box marginBottom={'1%'}>
+                  <Typography>
+                    Upload the file you want to collaborate
+                    <br />
+                    {Boolean(file) && 'file name: ' + fileName}
+                  </Typography>
+                </Box>
                 <Box
                   className="Get File-Name- and send it to the code editor"
                   marginBottom={'30%'}
                 >
                   {/* <ButtonGroup> */}
-                  <Button variant="contained" component="label">
-                    Upload File
-                    <input type="file" hidden />
-                  </Button>
 
-                  <Button variant="contained" sx={{ marginLeft: '4%' }}>
-                    Save File
+                  <Button
+                    variant="contained"
+                    component="label"
+                    disabled={Boolean(file)}
+                  >
+                    Upload File
+                    <input type="file" hidden onChange={handleFileChange} />
                   </Button>
-                  {/* </ButtonGroup> */}
+                  <Button
+                    variant="contained"
+                    sx={{ marginLeft: '1%' }}
+                    disabled={Boolean(!file)}
+                    onClick={() => {
+                      defaultFileSetting();
+                    }}
+                  >
+                    Delete File
+                  </Button>
+                </Box>
+                <Box>
+                  <Button variant="contained" sx={{ marginBottom: '5%' }}>
+                    Save To Cloud
+                  </Button>
                 </Box>
                 <Typography textAlign={'center'}>
                   Add Collaborators and viewers to this project
@@ -141,19 +195,24 @@ const CollabUrl = () => {
                     variant="contained"
                     sx={{ background: '#6C63FF' }}
                   >
-                    Get Project Link
+                    Add Members
                   </Button>
-                  <Snackbar
+                  {/* <Snackbar
                     open={open}
                     autoHideDuration={8000}
                     onClose={handleClose}
                     message={`${user_id}/${project_id}`}
                     action={action}
                     anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
-                  />
+                  /> */}
                 </div>
               </Box>
             </Box>
+            <AddMembers
+              open={open}
+              handleClose={handleClose}
+              title="Modal"
+            ></AddMembers>
           </>
         )}
       </>
